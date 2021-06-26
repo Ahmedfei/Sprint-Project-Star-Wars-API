@@ -1,18 +1,72 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import NavBar from "./components/NavBar"
+import People from "./components/Poeple";
+import Films from './components/Films';
+import Home from './components/Home';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import './App.css';
 
 const App = () => {
-  // Try to think through what state you'll need for this app before starting. Then build out
-  // the state properties here.
 
-  // Fetch characters from the star wars api in an effect hook. Remember, anytime you have a 
-  // side effect in a component, you want to think about which state and/or props it should
-  // sync up with, if any.
+  const [people, setPeople] = useState([]);
+  
+  const [films, setFilms] = useState([]);
+
+
+  useEffect(() => {
+
+async function fetchPeople() {
+let res = await fetch ("https://swapi.dev/api/people/" );
+let data = await res.json();
+setPeople(data.results);
+
+
+  }
+
+  async function fetchFilms() {
+    let res = await fetch ("https://swapi.dev/api/films/" );
+    let data = await res.json();
+    setFilms(data.results);
+
+
+
+  }
+
+
+
+  fetchPeople();
+  fetchFilms();
+  
+  }, []);
+
+  console.log("data", people);
+  console.log("data", films);
+  
 
   return (
-    <div className="App">
-      <h1 className="Header">React Wars</h1>
-    </div>
+    <>
+      <Router>
+      <NavBar />
+<Switch>
+
+<Route exact path="/">
+      <Home />
+      </Route>
+      
+  
+      <Route exact path="/people">
+      <People  people={people}/>
+      </Route>
+
+      <Route exact path="/planets">
+      < Films  films={films} />
+      </Route>
+
+
+</Switch>
+      </Router>
+      </>
+    
   );
 }
 
